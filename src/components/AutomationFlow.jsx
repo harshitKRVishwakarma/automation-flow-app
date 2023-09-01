@@ -58,7 +58,7 @@ const AutomationFlow = () => {
 			dispatch({ type: "ADD_NODE_ROOT" });
 		}
 
-		if (node.type === "addNode") {
+		if (node.id !== "add-root" && node.type === "addNode") {
 			// TODO: render conditional
 			dispatch({ type: "ADD_NODE", payload: node });
 		}

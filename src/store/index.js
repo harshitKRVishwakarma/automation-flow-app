@@ -43,6 +43,8 @@ const flowReducer = (state = initialState, action) => {
 	const initialStateCopy = JSON.parse(JSON.stringify(state));
 
 	if (action.type === "ADD_NODE_ROOT") {
+		console.log("ADD_NODE_ROOT");
+
 		const conditionalNode = {
 			id: getRandomId(),
 			position: { x: rootNode.position.x, y: rootNode.position.y + 100 },
@@ -57,8 +59,23 @@ const flowReducer = (state = initialState, action) => {
 	}
 
 	if (action.type === "ADD_NODE") {
-		//
-        // createNode(initialState, conditionalNode, )
+		console.log("ADD_NODE");
+		const conditionalNode = {
+			id: getRandomId(),
+			position: {
+				x: action.payload.position.x,
+				y: action.payload.position.y + 100,
+			},
+			type: "conditionalNode",
+			data: {
+				value: "some conditonal data",
+				parentId: action.payload.data.parentId,
+			},
+		};
+		console.log("CONDITIONAL_NODE", conditionalNode);
+		let updatedState = createNode(initialStateCopy, conditionalNode, action.payload.data.parentId);
+		updatedState = deleteNode(updatedState, action.payload.id);
+		return updatedState;
 	}
 	return state;
 };
