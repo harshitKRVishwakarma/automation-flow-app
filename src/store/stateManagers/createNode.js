@@ -15,7 +15,7 @@ export const createNode = (state, newNode, parentId) => {
 			id: getRandomId(),
 			position: { x: newNode.position.x - 100, y: newNode.position.y + 100 },
 			type: "booleanNode",
-			data: { value: true, parentId },
+			data: { value: true, parentId: newNode.id },
 		};
 
 		createNode(state, trueNode, newNode.id);
@@ -39,7 +39,7 @@ export const createNode = (state, newNode, parentId) => {
 			id: getRandomId(),
 			position: { x: newNode.position.x + 100, y: newNode.position.y + 100 },
 			type: "booleanNode",
-			data: { value: false },
+			data: { value: false, parentId: newNode.id },
 		};
 		createNode(state, falseNode, newNode.id);
 		const newEdgeFalse = {
@@ -55,7 +55,7 @@ export const createNode = (state, newNode, parentId) => {
 			id: getRandomId(),
 			position: { x: newNode.position.x, y: newNode.position.y + 100 },
 			type: "addNode",
-			data: { value: "addNode" },
+			data: { value: "addNode", parentId: newNode.id },
 		};
 		createNode(state, addNode, newNode.id);
 	}
