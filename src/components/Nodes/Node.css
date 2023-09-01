@@ -1,0 +1,8 @@
+.node {
+	display: inline-block;
+	padding: 8px 16px; 
+	border: 1px solid #000000;
+	text-align: center;
+    border-radius: 25px;
+    width: 6em;
+}
