@@ -6,7 +6,6 @@ import { Handle, Position } from "reactflow";
 /**
  * Redux imports
  */
-import { useDispatch } from "react-redux";
 
 /**
  * Styles
@@ -21,7 +20,7 @@ const AddNode = () => {
 				type="target"
 				position={Position.Top}
 			/>
-			<div className="node">Add</div>
+			<div className="node add-node">Add</div>
 			<Handle
 				type="source"
 				position={Position.Bottom}

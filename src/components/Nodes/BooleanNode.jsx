@@ -9,7 +9,7 @@ const BooleanNode = ({ data }) => {
 				type="target"
 				position={Position.Top}
 			/>
-			<div className="node">{data.value ? "True" : "False"}</div>
+			<div className="node boolean-node">{data.value ? "Yes" : "No"}</div>
 			<Handle
 				type="source"
 				position={Position.Bottom}

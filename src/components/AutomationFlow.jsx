@@ -1,7 +1,7 @@
 /**
  * React imports
  */
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -13,26 +13,46 @@ import ReactFlow, {
 	Controls,
 	Background,
 	useReactFlow,
+	Panel,
 } from "reactflow";
 
 /**
  * Styles imports
  */
 import "reactflow/dist/style.css";
+import "./AutomationFlow.css";
 
 /**
- * Customa Nodes
+ * Custom Nodes
  */
 import RootNode from "./Nodes/RootNode";
 import AddNode from "./Nodes/AddNode";
 import BooleanNode from "./Nodes/BooleanNode";
 import ConditionalNode from "./Nodes/ConditionalNode";
+import MiniMapNode from "./Nodes/MiniMapNode";
 
 const AutomationFlow = () => {
 	console.log("AUTOMATIONFLOW RENDERS");
 
 	const nodes = useSelector((state) => state.nodes);
 	const edges = useSelector((state) => state.edges);
+
+	const [variant, setVariant] = useState("dots");
+
+	const nodeColor = (node) => {
+		switch (node.type) {
+			case "rootNode":
+				return "#6AC96E";
+			case "addNode":
+				return "#17c2e0";
+			case "booleanNode":
+				return "#D1005D";
+			case "conditionalNode":
+				return "#1c1c1f";
+			default:
+				return "#ff0072";
+		}
+	};
 
 	const onNodesChangeHandler = (changes) => {
 		dispatch({ type: "NODES_CHANGE", payload: changes });
@@ -80,10 +100,24 @@ const AutomationFlow = () => {
 					nodeTypes={nodeTypes}
 					onNodeClick={onNodeClickHandler}
 					onNodesChange={onNodesChangeHandler}
-					onEdgesChange={onEdgesChangeHandler}>
-					<MiniMap />
+					onEdgesChange={onEdgesChangeHandler}
+					fitView>
+					<Panel position="top-left">
+						<div>Set Variant Style</div>
+						<div>
+							<button onClick={() => setVariant("dots")}>Dots</button>
+							<button onClick={() => setVariant("lines")}>Lines</button>
+							<button onClick={() => setVariant("cross")}>Cross</button>
+						</div>
+					</Panel>
+					<MiniMap
+						nodeColor={nodeColor}
+						pannable={true}
+						zoomable={true}
+						nodeComponent={MiniMapNode}
+					/>
 					<Controls />
-					<Background />
+					<Background variant={variant} />
 				</ReactFlow>
 			</div>
 		</>

@@ -1,8 +1,25 @@
 .node {
 	display: inline-block;
-	padding: 8px 16px; 
-	border: 1px solid #000000;
+	padding: 8px 16px;
+	border: none;
 	text-align: center;
-    border-radius: 25px;
-    width: 6em;
+	border-radius: 25px;
+	width: 6em;
+	color: #fff;
+}
+
+.add-node {
+	background-color: #17c2e0;
+}
+
+.root-node {
+	background-color: #6ac96e;
+}
+
+.conditional-node {
+	background-color: #1c1c1f;
+}
+
+.boolean-node {
+	background-color: #d1005d;
 }

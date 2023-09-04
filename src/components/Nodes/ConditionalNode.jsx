@@ -1,6 +1,6 @@
 import { Handle, Position } from "reactflow";
 
-import "./Node.css"
+import "./Node.css";
 
 const ConditionalNode = () => {
 	return (
@@ -9,7 +9,7 @@ const ConditionalNode = () => {
 				type="target"
 				position={Position.Top}
 			/>
-			<div className="node">Condition</div>
+			<div className="node conditional-node">Condition</div>
 			<Handle
 				type="source"
 				position={Position.Bottom}
