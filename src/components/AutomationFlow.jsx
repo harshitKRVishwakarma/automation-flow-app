@@ -1,7 +1,7 @@
 /**
  * React imports
  */
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -31,8 +31,14 @@ import BooleanNode from "./Nodes/BooleanNode";
 import ConditionalNode from "./Nodes/ConditionalNode";
 import MiniMapNode from "./Nodes/MiniMapNode";
 
+/**
+ * d3-tree
+ */
+import getLayoutedElements from "../store/stateManagers/getLayoutedElements";
+
 const AutomationFlow = () => {
 	console.log("AUTOMATIONFLOW RENDERS");
+	const { fitView } = useReactFlow();
 
 	const nodes = useSelector((state) => state.nodes);
 	const edges = useSelector((state) => state.edges);
@@ -74,22 +80,36 @@ const AutomationFlow = () => {
 		[]
 	);
 
-	const reactFlow = useReactFlow();
+	const onFixLayoutHandler = useCallback(() => {
+		const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+			nodes,
+			edges
+		);
 
-	useEffect(() => {
-		console.log(reactFlow);
-	}, [reactFlow]);
+		dispatch({
+			type: "LAYOUT_CHANGE",
+			payload: { nodes: layoutedNodes, edges: layoutedEdges },
+		});
 
-	const onNodeClickHandler = (event, node) => {
-		console.log("NODE_CLICKED", node);
-		if (node.id === "add-root") {
-			dispatch({ type: "ADD_NODE_ROOT" });
-		}
+		window.requestAnimationFrame(() => {
+			fitView();
+		});
+	}, [nodes, edges, dispatch, fitView]);
 
-		if (node.id !== "add-root" && node.type === "addNode") {
-			dispatch({ type: "ADD_NODE", payload: node });
-		}
-	};
+	const onNodeClickHandler = useCallback(
+		(event, node) => {
+			console.log("NODE_CLICKED", node);
+			if (node.id === "add-root") {
+				dispatch({ type: "ADD_NODE_ROOT" });
+				// onFixLayoutHandler();
+			}
+
+			if (node.id !== "add-root" && node.type === "addNode") {
+				dispatch({ type: "ADD_NODE", payload: node });
+			}
+		},
+		[dispatch]
+	);
 
 	return (
 		<>
@@ -108,6 +128,11 @@ const AutomationFlow = () => {
 							<button onClick={() => setVariant("dots")}>Dots</button>
 							<button onClick={() => setVariant("lines")}>Lines</button>
 							<button onClick={() => setVariant("cross")}>Cross</button>
+						</div>
+					</Panel>
+					<Panel position="top-right">
+						<div>
+							<button onClick={onFixLayoutHandler}>Fix Layout</button>
 						</div>
 					</Panel>
 					<MiniMap
