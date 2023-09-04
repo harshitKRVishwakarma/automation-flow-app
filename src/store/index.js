@@ -67,7 +67,20 @@ const flowReducer = (state = initialState, action) => {
 		updatedState = deleteNode(updatedState, "add-root");
 
 		console.log("UPDATED STATE", updatedState);
-		return updatedState;
+
+		/**
+		 * getLayoutedElements ensures that the nodes
+		 * are laid out in a tree structure without
+		 * overlapping
+		 */
+		const { nodes, edges } = getLayoutedElements(
+			updatedState.nodes,
+			updatedState.edges
+		);
+		return {
+			nodes,
+			edges,
+		};
 	}
 
 	if (action.type === "ADD_NODE") {
@@ -102,12 +115,16 @@ const flowReducer = (state = initialState, action) => {
 
 		return { nodes, edges };
 	}
+
+	// This is for when the nodes are dragged
 	if (action.type === "NODES_CHANGE") {
 		return {
 			...state,
 			nodes: applyNodeChanges(action.payload, state.nodes),
 		};
 	}
+
+	// This is for when the edges are changed/dragged
 	if (action.type === "EDGES_CHANGE") {
 		return {
 			...state,
@@ -115,6 +132,7 @@ const flowReducer = (state = initialState, action) => {
 		};
 	}
 
+	// added this for the panel to update the layout
 	if (action.type === "LAYOUT_CHANGE") {
 		return {
 			nodes: action.payload.nodes,

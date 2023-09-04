@@ -14,7 +14,7 @@ import "./Node.css";
 import "./AddNode.css";
 
 const AddNode = (props) => {
-	console.log("prosssss", props);
+	console.log("PROP_ADD_NODE", props);
 	return (
 		<>
 			<Handle
