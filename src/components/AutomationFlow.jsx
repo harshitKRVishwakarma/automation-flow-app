@@ -1,7 +1,7 @@
 /**
  * React imports
  */
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from "react-redux";
  * React flow imports
  */
 import ReactFlow, {
-	addEdge,
 	MiniMap,
 	Controls,
 	Background,
@@ -34,6 +33,15 @@ const AutomationFlow = () => {
 
 	const nodes = useSelector((state) => state.nodes);
 	const edges = useSelector((state) => state.edges);
+
+	const onNodesChangeHandler = (changes) => {
+		dispatch({ type: "NODES_CHANGE", payload: changes });
+	};
+
+	const onEdgesChangeHandler = (changes) => {
+		dispatch({ type: "EDGES_CHANGE", payload: changes });
+	};
+
 	const dispatch = useDispatch();
 
 	const nodeTypes = useMemo(
@@ -59,7 +67,6 @@ const AutomationFlow = () => {
 		}
 
 		if (node.id !== "add-root" && node.type === "addNode") {
-			// TODO: render conditional
 			dispatch({ type: "ADD_NODE", payload: node });
 		}
 	};
@@ -71,7 +78,9 @@ const AutomationFlow = () => {
 					nodes={nodes}
 					edges={edges}
 					nodeTypes={nodeTypes}
-					onNodeClick={onNodeClickHandler}>
+					onNodeClick={onNodeClickHandler}
+					onNodesChange={onNodesChangeHandler}
+					onEdgesChange={onEdgesChangeHandler}>
 					<MiniMap />
 					<Controls />
 					<Background />

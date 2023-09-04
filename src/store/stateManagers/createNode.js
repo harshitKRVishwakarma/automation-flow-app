@@ -1,7 +1,8 @@
 import { getRandomId } from "../../utils/getRandomId";
+import { adjustNode } from "./adjustNode";
 
 /**
- *
+ * @description Creates a new node and adds it to the state
  * @param {*} state Current state
  * @param {*} newNode New node to add
  * @param {*} parentId Id of parent node
@@ -9,7 +10,7 @@ import { getRandomId } from "../../utils/getRandomId";
  */
 export const createNode = (state, newNode, parentId) => {
 	state.nodes.push(newNode);
-
+    adjustNode(state, newNode, parentId);
 	if (newNode.type === "conditionalNode") {
 		const trueNode = {
 			id: getRandomId(),
@@ -17,6 +18,7 @@ export const createNode = (state, newNode, parentId) => {
 			type: "booleanNode",
 			data: { value: true, parentId: newNode.id },
 		};
+		
 
 		createNode(state, trueNode, newNode.id);
 
@@ -24,7 +26,6 @@ export const createNode = (state, newNode, parentId) => {
 			id: getRandomId(),
 			source: parentId,
 			target: newNode.id,
-			type: "straight",
 		};
 		state.edges.push(newEdge);
 
@@ -41,6 +42,8 @@ export const createNode = (state, newNode, parentId) => {
 			type: "booleanNode",
 			data: { value: false, parentId: newNode.id },
 		};
+		
+
 		createNode(state, falseNode, newNode.id);
 		const newEdgeFalse = {
 			id: getRandomId(),
@@ -57,6 +60,8 @@ export const createNode = (state, newNode, parentId) => {
 			type: "addNode",
 			data: { value: "addNode", parentId: newNode.id },
 		};
+
+
 		createNode(state, addNode, newNode.id);
 	}
 
@@ -65,7 +70,6 @@ export const createNode = (state, newNode, parentId) => {
 			id: getRandomId(),
 			source: parentId,
 			target: newNode.id,
-			type: "straight",
 		};
 
 		state.edges.push(newEdge);
@@ -76,7 +80,7 @@ export const createNode = (state, newNode, parentId) => {
 };
 
 /**
- *
+ * @description Deletes a node and its edges from the state
  * @param {*} state Current state
  * @param {*} nodeId Id of node to delete
  * @returns Updated state

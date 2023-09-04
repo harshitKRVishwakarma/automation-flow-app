@@ -1,4 +1,9 @@
 /**
+ * React flow imports
+ */
+import { applyEdgeChanges, applyNodeChanges } from "reactflow";
+
+/**
  * Redux import
  */
 import { createStore } from "redux";
@@ -17,14 +22,14 @@ const rootNode = {
 	id: "root",
 	position: { x: 360, y: 100 },
 	type: "rootNode",
-	data: { value: "rootNode" },
+	data: { value: "rootNode", children: ["add-root"], parentId: null },
 };
 
 const addNode = {
 	id: "add-root",
 	position: { x: 360, y: 190 },
 	type: "addNode",
-	data: { value: "rootNode" },
+	data: { value: "rootNode", children: [], parentId: "root" },
 };
 
 const initialState = {
@@ -34,7 +39,6 @@ const initialState = {
 			id: "e1-default",
 			source: "root",
 			target: "add-root",
-			type: "straight",
 		},
 	],
 };
@@ -47,9 +51,9 @@ const flowReducer = (state = initialState, action) => {
 
 		const conditionalNode = {
 			id: getRandomId(),
-			position: { x: rootNode.position.x, y: rootNode.position.y + 100 },
+			position: { x: addNode.position.x, y: addNode.position.y },
 			type: "conditionalNode",
-			data: { value: "some conditonal data" },
+			data: { value: "some conditonal data", parentId: "root" },
 		};
 		let updatedState = createNode(initialStateCopy, conditionalNode, "root");
 		updatedState = deleteNode(updatedState, "add-root");
@@ -60,11 +64,12 @@ const flowReducer = (state = initialState, action) => {
 
 	if (action.type === "ADD_NODE") {
 		console.log("ADD_NODE");
+		console.log("PAYLOAD", action.payload);
 		const conditionalNode = {
 			id: getRandomId(),
 			position: {
 				x: action.payload.position.x,
-				y: action.payload.position.y + 100,
+				y: action.payload.position.y,
 			},
 			type: "conditionalNode",
 			data: {
@@ -72,10 +77,28 @@ const flowReducer = (state = initialState, action) => {
 				parentId: action.payload.data.parentId,
 			},
 		};
-		console.log("CONDITIONAL_NODE", conditionalNode);
-		let updatedState = createNode(initialStateCopy, conditionalNode, action.payload.data.parentId);
+
+		let updatedState = createNode(
+			initialStateCopy,
+			conditionalNode,
+			action.payload.data.parentId
+		);
 		updatedState = deleteNode(updatedState, action.payload.id);
+        
+        console.log('UPDATED STATE', updatedState);
 		return updatedState;
+	}
+	if (action.type === "NODES_CHANGE") {
+		return {
+			...state,
+			nodes: applyNodeChanges(action.payload, state.nodes),
+		};
+	}
+	if (action.type === "EDGES_CHANGE") {
+		return {
+			...state,
+			edges: applyEdgeChanges(action.payload, state.edges),
+		};
 	}
 	return state;
 };
