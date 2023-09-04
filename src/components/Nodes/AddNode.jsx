@@ -13,7 +13,8 @@ import { Handle, Position } from "reactflow";
 import "./Node.css";
 import "./AddNode.css";
 
-const AddNode = () => {
+const AddNode = (props) => {
+	console.log("prosssss", props);
 	return (
 		<>
 			<Handle

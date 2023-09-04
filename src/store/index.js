@@ -18,13 +18,20 @@ import { createNode, deleteNode } from "./stateManagers/createNode";
  */
 import { getRandomId } from "../utils/getRandomId";
 
+/**
+ * d3-hierarchy
+ */
+import getLayoutedElements from "./stateManagers/getLayoutedElements";
+
+/**
+ * Initial Nodes and Edges State
+ */
 const rootNode = {
 	id: "root",
 	position: { x: 360, y: 100 },
 	type: "rootNode",
 	data: { value: "rootNode", children: ["add-root"], parentId: null },
 };
-
 const addNode = {
 	id: "add-root",
 	position: { x: 360, y: 190 },
@@ -39,6 +46,7 @@ const initialState = {
 			id: "e1-default",
 			source: "root",
 			target: "add-root",
+			animated: true,
 		},
 	],
 };
@@ -84,9 +92,15 @@ const flowReducer = (state = initialState, action) => {
 			action.payload.data.parentId
 		);
 		updatedState = deleteNode(updatedState, action.payload.id);
-        
-        console.log('UPDATED STATE', updatedState);
-		return updatedState;
+
+		console.log("UPDATED STATE", updatedState);
+
+		const { nodes, edges } = getLayoutedElements(
+			updatedState.nodes,
+			updatedState.edges
+		);
+
+		return { nodes, edges };
 	}
 	if (action.type === "NODES_CHANGE") {
 		return {
@@ -100,6 +114,14 @@ const flowReducer = (state = initialState, action) => {
 			edges: applyEdgeChanges(action.payload, state.edges),
 		};
 	}
+
+	if (action.type === "LAYOUT_CHANGE") {
+		return {
+			nodes: action.payload.nodes,
+			edges: action.payload.edges,
+		};
+	}
+
 	return state;
 };
 
